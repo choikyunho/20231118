@@ -2,6 +2,8 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { verifyToken } from "./auth";
+// import { verifyToken } from ""
 
 const router = express.Router();
 
@@ -55,5 +57,20 @@ router.post("/", async (req, res) => {
     });
   }
 });
+
+// 유저 확인
+router.get("/", verifyToken, async (req: any, res) => {
+    try {
+      const { account } = req.user;
+  
+      return res.json({ account });
+    } catch (error) {
+      console.error(error);
+  
+      return res.status(500).json({
+        message: "Server Error.",
+      });
+    }
+  });
 
 export default router;
